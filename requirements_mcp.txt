@@ -1,0 +1,4 @@
+# Requirements for Random Reason Picker MCP Server
+# Install with: pip install -r requirements_mcp.txt
+
+fastmcp>=0.1.0
