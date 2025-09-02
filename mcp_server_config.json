@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "no-as-a-reason-picker": {
+      "command": "~/.venv/bin/python3",
+      "args": ["~/reason_picker_mcp.py"]
+    }
+  }
+}
