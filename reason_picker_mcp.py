@@ -73,6 +73,69 @@ def get_random_reason() -> str:
     """
     return _get_random_reason_internal()
 
+@mcp.tool()
+def get_multiple_random_reasons(count: int = 3) -> list[str]:
+    """
+    Pick multiple random reasons from the loaded CSV file.
+    
+    Args:
+        count: Number of reasons to pick (default: 3, max: 10)
+    
+    Returns:
+        list[str]: A list of randomly selected reasons
+    """
+    try:
+        # Limit count to reasonable range
+        count = max(1, min(count, 10))
+        
+        reasons = load_reasons()
+        if not reasons:
+            return ["No reasons available in the CSV file."]
+        
+        # If we have fewer reasons than requested, return all available
+        if len(reasons) < count:
+            return random.sample(reasons, len(reasons))
+        
+        return random.sample(reasons, count)
+    except Exception as e:
+        return [f"Error loading reasons: {str(e)}"]
+
+@mcp.tool()
+def get_reason_stats() -> dict:
+    """
+    Get statistics about the reasons database.
+    
+    Returns:
+        dict: Statistics including total count and sample reasons
+    """
+    try:
+        reasons = load_reasons()
+        
+        stats = {
+            "total_reasons": len(reasons),
+            "csv_file": _csv_file_path,
+            "sample_reasons": reasons[:3] if len(reasons) >= 3 else reasons
+        }
+        
+        return stats
+    except Exception as e:
+        return {"error": f"Error loading reasons: {str(e)}"}
+
+@mcp.tool()
+def reload_reasons() -> str:
+    """
+    Reload reasons from the CSV file (clears cache).
+    
+    Returns:
+        str: Status message
+    """
+    global _reasons_cache
+    try:
+        _reasons_cache = None
+        reasons = load_reasons()
+        return f"Successfully reloaded {len(reasons)} reasons from {_csv_file_path}"
+    except Exception as e:
+        return f"Error reloading reasons: {str(e)}"
 
 if __name__ == "__main__":
     import sys
